@@ -3,10 +3,10 @@ package org.cerion.symcalcapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import org.cerion.symcalcapp.ui.theme.SymCalcTheme
 
@@ -17,7 +17,7 @@ class MainActivity : ComponentActivity() {
             SymCalcTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    Greeting("Android")
+                    Calculator()
                 }
             }
         }
@@ -25,14 +25,25 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
+fun Calculator() {
+    var display by remember { mutableStateOf("2+2") }
+
+    val onClick = { key: String ->
+        display += key
+    }
+
+    Column {
+
+        TextField(value = display, onValueChange = {}, textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.End))
+        KeyPad(onClick)
+    }
+
 }
 
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     SymCalcTheme {
-        Greeting("Android")
+        Calculator()
     }
 }
