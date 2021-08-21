@@ -4,10 +4,15 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.sp
 import org.cerion.symcalc.expression.Expr
 import org.cerion.symcalcapp.ui.theme.SymCalcTheme
 
@@ -26,8 +31,12 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Calculator() {
-    var display by remember { mutableStateOf("") }
+fun Calculator(initialDisplay: String = "") {
+
+    var display by remember { mutableStateOf(initialDisplay) }
+    var preview by remember {
+        mutableStateOf(if (initialDisplay.isNotEmpty()) Expr.parse(initialDisplay).eval().toString() else "")
+    }
 
     val onClick = { key: Key ->
         when(key) {
@@ -40,18 +49,34 @@ fun Calculator() {
                 val inputExpr = Expr.parse(display)
                 val result = inputExpr.eval()
 
-                // TODO add error message
-                if (!result.isError)
+                if (result.isError)
+                    preview = result.toString()
+                else {
                     display = result.toString()
+                    preview = ""
+                }
             }
             else -> {
                 display += key.inputValue()
             }
         }
+
+        if (key != Key.EVAL) {
+            val inputEval = Expr.parse(display).eval()
+            if (!inputEval.isError && inputEval.toString() != display)
+                preview = inputEval.toString()
+        }
     }
 
     Column {
-        TextField(value = display, onValueChange = {}, textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.End))
+        Text(text = display,
+            Modifier.fillMaxWidth(),
+            fontSize = 40.sp,
+            textAlign = TextAlign.Right)
+        Text(text = preview,
+            Modifier.fillMaxWidth(),
+            fontSize = 30.sp,
+            textAlign = TextAlign.Right)
         KeyPad(onClick)
     }
 
@@ -61,6 +86,6 @@ fun Calculator() {
 @Composable
 fun DefaultPreview() {
     SymCalcTheme {
-        Calculator()
+        Calculator("2+2")
     }
 }
