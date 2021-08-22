@@ -1,16 +1,19 @@
 package org.cerion.symcalcapp
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import org.cerion.symcalcapp.ui.theme.SymCalcTheme
 
+val ButtonColor = Color(0xFF111111)
+
 @Composable
 fun KeyPad(onKeyPress: (key: Key) -> Unit) {
-    Row(Modifier.fillMaxWidth()) {
+    Row(Modifier.fillMaxWidth().background(ButtonColor)) {
         Column(Modifier.weight(0.75f)) {
             Row(Modifier.weight(1.0f)) {
                 Key("7") { onKeyPress(Key.NUM_7) }
@@ -45,15 +48,19 @@ fun KeyPad(onKeyPress: (key: Key) -> Unit) {
 
 @Composable
 fun ColumnScope.Key(label: String, onKeyPress:() -> Unit) {
-    Button(onClick = { onKeyPress() }, Modifier.fillMaxWidth().weight(1f)) {
-        Text(text = label)
+    Button(onClick = { onKeyPress() }, Modifier.fillMaxWidth().weight(1f),
+        colors = ButtonDefaults.buttonColors(backgroundColor = ButtonColor))
+    {
+        Text(text = label, color = Color.White)
     }
 }
 
 @Composable
 fun RowScope.Key(label: String, onKeyPress:() -> Unit) {
-    Button(onClick = { onKeyPress() }, Modifier.fillMaxHeight().weight(1f)) {
-        Text(text = label)
+    Button(onClick = { onKeyPress() }, Modifier.fillMaxHeight().weight(1f),
+        colors = ButtonDefaults.buttonColors(backgroundColor = ButtonColor))
+    {
+        Text(text = label, color = Color.White)
     }
 }
 
