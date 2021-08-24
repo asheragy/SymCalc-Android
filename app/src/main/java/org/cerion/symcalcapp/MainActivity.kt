@@ -44,6 +44,8 @@ fun Calculator(initialDisplay: String = "") {
     val onClick = { key: Key ->
         when(key) {
             Key.DEL -> {
+                if (preview.isEmpty())
+                    display = ""
                 if (display.isNotEmpty())
                     display = display.substring(0, display.length - 1)
             }

@@ -47,6 +47,32 @@ fun KeyPad(onKeyPress: (key: Key) -> Unit) {
 }
 
 @Composable
+fun KeyPadExt(onKeyPress: (key: Key) -> Unit) {
+    Column {
+        Row(Modifier.fillMaxWidth().background(ButtonColor).weight(0.25f)) {
+            Key("Sin") { onKeyPress(Key.SIN) }
+            Key("Cos") { onKeyPress(Key.COS) }
+            Key("Tan") { onKeyPress(Key.TAN) }
+        }
+        Row(Modifier.fillMaxWidth().background(ButtonColor).weight(0.25f)) {
+            Key("Ln") { onKeyPress(Key.LN) }
+            Key("Log") { onKeyPress(Key.LOG) }
+            Key("Sqrt") { onKeyPress(Key.SQRT) }
+        }
+        Row(Modifier.fillMaxWidth().background(ButtonColor).weight(0.25f)) {
+            Key("Pi") { onKeyPress(Key.PI) }
+            Key("E") { onKeyPress(Key.E) }
+            Key("^") { onKeyPress(Key.POW) }
+        }
+        Row(Modifier.fillMaxWidth().background(ButtonColor).weight(0.25f)) {
+            Key("(") { onKeyPress(Key.BRACKET_LEFT) }
+            Key(")") { onKeyPress(Key.BRACKET_RIGHT) }
+            Key("!") { onKeyPress(Key.FACTORIAL) }
+        }
+    }
+}
+
+@Composable
 fun ColumnScope.Key(label: String, onKeyPress:() -> Unit) {
     Button(onClick = { onKeyPress() }, Modifier.fillMaxWidth().weight(1f),
         colors = ButtonDefaults.buttonColors(backgroundColor = ButtonColor))
@@ -68,6 +94,7 @@ fun RowScope.Key(label: String, onKeyPress:() -> Unit) {
 @Composable
 fun Preview() {
     SymCalcTheme {
-        KeyPad(onKeyPress = {})
+        //KeyPad(onKeyPress = {})
+        KeyPadExt(onKeyPress = {})
     }
 }

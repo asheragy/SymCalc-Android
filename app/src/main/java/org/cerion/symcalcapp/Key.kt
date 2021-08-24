@@ -1,5 +1,6 @@
 package org.cerion.symcalcapp
 
+
 enum class Key {
     DEL,
     EVAL,
@@ -17,7 +18,21 @@ enum class Key {
     PLUS,
     MINUS,
     TIMES,
-    DIVIDE;
+    DIVIDE,
+
+    SIN,
+    COS,
+    TAN,
+    LN,
+    LOG,
+    SQRT,
+    E,
+    PI,
+    POW,
+    FACTORIAL,
+    BRACKET_LEFT,
+    BRACKET_RIGHT;
+
 
     fun inputValue(): String {
         if (ordinal >= NUM_0.ordinal && ordinal <= NUM_9.ordinal)
