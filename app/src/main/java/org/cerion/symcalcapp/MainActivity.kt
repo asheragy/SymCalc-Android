@@ -6,17 +6,18 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
-import org.cerion.symcalc.expression.Expr
 import org.cerion.symcalcapp.ui.theme.SymCalcTheme
 
 class MainActivity : ComponentActivity() {
@@ -34,44 +35,10 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Calculator(initialDisplay: String = "") {
+fun Calculator(viewModel: MainViewModel = MainViewModel()) {
 
-    var display by remember { mutableStateOf(initialDisplay) }
-    var preview by remember {
-        mutableStateOf(if (initialDisplay.isNotEmpty()) Expr.parse(initialDisplay).eval().toString() else "")
-    }
-
-    val onClick = { key: Key ->
-        when(key) {
-            Key.DEL -> {
-                if (preview.isEmpty())
-                    display = ""
-                if (display.isNotEmpty())
-                    display = display.substring(0, display.length - 1)
-            }
-            Key.EVAL -> {
-                // TODO fix precision 8.05 - 5
-                val inputExpr = Expr.parse(display)
-                val result = inputExpr.eval()
-
-                if (result.isError)
-                    preview = result.toString()
-                else {
-                    display = result.toString()
-                    preview = ""
-                }
-            }
-            else -> {
-                display += key.inputValue()
-            }
-        }
-
-        if (key != Key.EVAL) {
-            val inputEval = Expr.parse(display).eval()
-            if (!inputEval.isError && inputEval.toString() != display)
-                preview = inputEval.toString()
-        }
-    }
+    val display: String by viewModel.display.observeAsState(viewModel.display.value!!)
+    val preview: String by viewModel.preview.observeAsState(viewModel.preview.value!!)
 
     Column(Modifier.background(Color.DarkGray, RectangleShape)) {
         Text(text = display,
@@ -82,7 +49,9 @@ fun Calculator(initialDisplay: String = "") {
             Modifier.fillMaxWidth(),
             fontSize = 30.sp,
             textAlign = TextAlign.Right, color = Color.LightGray)
-        KeyPad(onClick)
+        KeyPad {
+            viewModel.onKey(it)
+        }
     }
 
 }
@@ -91,6 +60,6 @@ fun Calculator(initialDisplay: String = "") {
 @Composable
 fun DefaultPreview() {
     SymCalcTheme {
-        Calculator("2+2")
+        Calculator(MainViewModel("2+3"))
     }
 }
