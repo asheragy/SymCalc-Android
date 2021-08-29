@@ -44,6 +44,18 @@ enum class Key {
             DIVIDE -> "/"
             TIMES -> "*"
             MINUS -> "-"
+            BRACKET_LEFT -> "("
+            BRACKET_RIGHT -> ")"
+            FACTORIAL -> "!"
+            POW -> "^"
+            E -> "E"
+            PI -> "Pi"
+            SIN -> "Sin("
+            COS -> "Cos("
+            TAN -> "Tan("
+            SQRT -> "Sqrt("
+            LOG -> "Log("
+            LN -> "Ln("
             else -> throw UnsupportedOperationException()
         }
     }

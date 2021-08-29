@@ -1,5 +1,6 @@
 package org.cerion.symcalcapp
 
+import androidx.compose.runtime.produceState
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,6 +17,13 @@ class MainViewModel(initialDisplay: String = "") : ViewModel() {
         if (initialDisplay.isNotEmpty())
             _preview.value = Expr.parse(initialDisplay).eval().toString()
     }
+
+    fun clear() {
+        _display.value = ""
+        _preview.value = ""
+    }
+
+    // TODO auto closing bracket "(3+1 = 4"
 
     fun onKey(key: Key) {
 

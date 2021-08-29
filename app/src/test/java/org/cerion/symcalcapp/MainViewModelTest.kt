@@ -14,32 +14,111 @@ internal class MainViewModelTest {
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
 
+    private val display
+        get() = viewModel.display.value
+
+    private val preview
+        get() = viewModel.preview.value
+
     @org.junit.Before
     fun beforeEach() {
         viewModel = MainViewModel()
     }
 
+    private fun onKey(key: Key) {
+        viewModel.onKey(key)
+    }
+
+    private fun onKeys(vararg keys: Key) {
+        keys.forEach {
+            viewModel.onKey(it)
+        }
+    }
+
     @Test
     fun basic() {
-        assertEquals("",viewModel.display.value)
-        assertEquals("", viewModel.preview.value)
+        assertEquals("", display)
+        assertEquals("", preview)
 
-        viewModel.apply {
-            onKey(Key.NUM_2)
-            assertEquals("2", viewModel.display.value)
-            assertEquals("", viewModel.preview.value)
+        onKey(Key.NUM_2)
+        assertEquals("2", display)
+        assertEquals("", preview)
 
-            onKey(Key.PLUS)
-            assertEquals("2+", viewModel.display.value)
-            assertEquals("", viewModel.preview.value)
+        onKey(Key.PLUS)
+        assertEquals("2+", display)
+        assertEquals("", preview)
 
-            onKey(Key.NUM_2)
-            assertEquals("2+2", viewModel.display.value)
-            assertEquals("4", viewModel.preview.value)
+        onKey(Key.NUM_2)
+        assertEquals("2+2", display)
+        assertEquals("4", preview)
 
-            onKey(Key.EVAL)
-            assertEquals("4", viewModel.display.value)
-            assertEquals("", viewModel.preview.value)
-        }
+        onKey(Key.EVAL)
+        assertEquals("4", display)
+        assertEquals("", preview)
+
+        viewModel.clear()
+        assertEquals("", display)
+        assertEquals("", preview)
+    }
+
+    @Test
+    fun factorial() {
+        onKeys(Key.BRACKET_LEFT, Key.NUM_1, Key.PLUS, Key.NUM_4, Key.BRACKET_RIGHT)
+        assertEquals("(1+4)", display)
+        assertEquals("5", preview)
+
+        onKey(Key.FACTORIAL)
+        assertEquals("(1+4)!", display)
+        assertEquals("120", preview)
+    }
+
+    @Test
+    fun trig() {
+        onKeys(Key.SIN, Key.NUM_5, Key.DOT, Key.NUM_0, Key.BRACKET_RIGHT)
+        assertEquals("Sin(5.0)", display)
+        assertEquals("-0.9589242746631385", preview)
+    }
+
+    @Test
+    fun pow() {
+        onKeys(Key.NUM_4, Key.POW, Key.NUM_3)
+        assertEquals("4^3", display)
+        assertEquals("64", preview)
+
+        viewModel.clear()
+        onKeys(Key.NUM_4, Key.POW, Key.BRACKET_LEFT, Key.NUM_1, Key.PLUS, Key.NUM_3, Key.BRACKET_RIGHT)
+        assertEquals("4^(1+3)", display)
+        assertEquals("256", preview)
+    }
+
+    @Test
+    fun sqrt() {
+        onKeys(Key.SQRT, Key.NUM_9, Key.BRACKET_RIGHT)
+        assertEquals("Sqrt(9)", display)
+        assertEquals("3", preview)
+    }
+
+    @Test
+    fun constant() {
+        onKeys(Key.E, Key.PLUS, Key.NUM_4, Key.DOT, Key.NUM_3)
+        assertEquals("E+4.3", display)
+        assertEquals("7.018281828459045", preview)
+
+        viewModel.clear()
+        onKeys(Key.PI, Key.PLUS, Key.NUM_4, Key.DOT, Key.NUM_3)
+        assertEquals("Pi+4.3", display)
+        assertEquals("7.441592653589793", preview)
+    }
+
+    @Test
+    fun log() {
+        onKeys(Key.LOG, Key.NUM_5, Key.DOT, Key.NUM_7, Key.BRACKET_RIGHT)
+        assertEquals("Log(5.7)", display)
+        assertEquals("1.7404661748405046", preview)
+
+        viewModel.clear()
+        onKeys(Key.LN, Key.NUM_5, Key.DOT, Key.NUM_7, Key.BRACKET_RIGHT)
+        assertEquals("Ln(5.7)", display)
+        assertEquals("1.7404661748405046", preview)
     }
 }
