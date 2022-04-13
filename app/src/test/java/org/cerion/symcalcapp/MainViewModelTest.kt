@@ -114,7 +114,7 @@ internal class MainViewModelTest {
     fun log() {
         onKeys(Key.LOG, Key.NUM_5, Key.DOT, Key.NUM_7, Key.BRACKET_RIGHT)
         assertEquals("Log(5.7)", display)
-        assertEquals("1.7404661748405046", preview)
+        assertEquals("0.7558748556724915", preview)
 
         viewModel.clear()
         onKeys(Key.LN, Key.NUM_5, Key.DOT, Key.NUM_7, Key.BRACKET_RIGHT)

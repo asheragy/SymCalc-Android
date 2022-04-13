@@ -23,6 +23,13 @@ class MainViewModel(initialDisplay: String = "") : ViewModel() {
         _preview.value = ""
     }
 
+    private val input: String
+        get() {
+            return display.value!!
+                .replace("Log(", "Log10(")
+                .replace("Ln(", "Log(")
+        }
+
     // TODO auto closing bracket "(3+1 = 4"
 
     fun onKey(key: Key) {
@@ -36,7 +43,7 @@ class MainViewModel(initialDisplay: String = "") : ViewModel() {
             }
             Key.EVAL -> {
                 // TODO fix precision 8.05 - 5
-                val inputExpr = Expr.parse(display.value!!)
+                val inputExpr = Expr.parse(input)
                 val result = inputExpr.eval()
 
                 if (result.isError)
@@ -52,8 +59,8 @@ class MainViewModel(initialDisplay: String = "") : ViewModel() {
         }
 
         if (key != Key.EVAL) {
-            val inputEval = Expr.parse(display.value!!).eval()
-            if (!inputEval.isError && inputEval.toString() != display.value!!)
+            val inputEval = Expr.parse(input).eval()
+            if (!inputEval.isError && inputEval.toString() != input)
                 _preview.value = inputEval.toString()
         }
     }
