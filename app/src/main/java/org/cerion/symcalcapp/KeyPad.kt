@@ -42,6 +42,7 @@ fun KeyPad(onKeyPress: (key: Key) -> Unit) {
             Key("*") { onKeyPress(Key.TIMES) }
             Key("-") { onKeyPress(Key.MINUS) }
             Key("+") { onKeyPress(Key.PLUS) }
+            Key("DEBUG") { onKeyPress(Key.DEBUG) }
         }
     }
 }
@@ -94,7 +95,7 @@ fun RowScope.Key(label: String, onKeyPress:() -> Unit) {
 @Composable
 fun Preview() {
     SymCalcTheme {
-        //KeyPad(onKeyPress = {})
-        KeyPadExt(onKeyPress = {})
+        KeyPad(onKeyPress = {})
+        //KeyPadExt(onKeyPress = {})
     }
 }

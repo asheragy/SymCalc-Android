@@ -31,7 +31,8 @@ enum class Key {
     POW,
     FACTORIAL,
     BRACKET_LEFT,
-    BRACKET_RIGHT;
+    BRACKET_RIGHT,
+    DEBUG;
 
 
     fun inputValue(): String {

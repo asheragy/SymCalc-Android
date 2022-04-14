@@ -1,5 +1,6 @@
 package org.cerion.symcalcapp
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -15,6 +16,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
@@ -36,7 +38,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Calculator(viewModel: MainViewModel = MainViewModel()) {
-
+    val context = LocalContext.current
     val display: String by viewModel.display.observeAsState(viewModel.display.value!!)
     val preview: String by viewModel.preview.observeAsState(viewModel.preview.value!!)
 
@@ -50,7 +52,10 @@ fun Calculator(viewModel: MainViewModel = MainViewModel()) {
             fontSize = 30.sp,
             textAlign = TextAlign.Right, color = Color.LightGray)
         KeyPad {
-            viewModel.onKey(it)
+            if (it == Key.DEBUG)
+                context.startActivity(Intent(context, DebugActivity::class.java))
+            else
+                viewModel.onKey(it)
         }
     }
 
