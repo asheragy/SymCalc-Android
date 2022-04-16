@@ -121,4 +121,43 @@ internal class MainViewModelTest {
         assertEquals("Ln(5.7)", display)
         assertEquals("1.7404661748405046", preview)
     }
+
+    @Test
+    fun precision() {
+        val test = { input: String, expected: String ->
+            viewModel.directInput(input)
+            assertEquals(expected, preview)
+        }
+
+        test("1/3", "0.333333333333")
+        test("1/3 + 1", "1.33333333333")
+        test("(1/3 + 1) * 3", "4")
+
+        test("2.12^9", "865.0132270093787")
+        test("Sqrt(3)", "1.73205080757")
+        test("Pi", "3.14159265359")
+        test("Pi + 1", "4.14159265359")
+        test("E", "2.71828182846")
+        test("E + 1", "3.71828182846")
+
+        //test("Log(2)", "0.30...")
+        //test("Ln(2)", "0.69...")
+
+        test("Sin(2)", "0.909297426826")
+        test("Cos(2)", "-0.416146836547")
+        test("Tan(2)", "-2.18503986326")
+    }
+
+    @Test
+    fun arbitraryPrecisionHeld() {
+        // TODO exact behavior is not quite like real calc
+        onKeys(Key.NUM_1, Key.DIVIDE, Key.NUM_3, Key.PLUS, Key.NUM_1, Key.EVAL)
+        assertEquals("4/3", display)
+
+        onKeys(Key.TIMES, Key.NUM_3)
+        assertEquals("4", preview)
+        onKeys(Key.EVAL)
+        assertEquals("4", display)
+        assertEquals("", preview)
+    }
 }

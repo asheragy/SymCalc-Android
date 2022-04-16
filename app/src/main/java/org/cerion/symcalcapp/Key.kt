@@ -4,6 +4,7 @@ package org.cerion.symcalcapp
 enum class Key {
     DEL,
     EVAL,
+    CLEAR,
     NUM_0,
     NUM_1,
     NUM_2,
@@ -26,6 +27,7 @@ enum class Key {
     LN,
     LOG,
     SQRT,
+    SQUARE,
     E,
     PI,
     POW,
@@ -55,6 +57,7 @@ enum class Key {
             COS -> "Cos("
             TAN -> "Tan("
             SQRT -> "Sqrt("
+            SQUARE -> "^2"
             LOG -> "Log("
             LN -> "Ln("
             else -> throw UnsupportedOperationException()
