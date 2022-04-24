@@ -58,8 +58,8 @@ enum class Key {
             TAN -> "Tan("
             SQRT -> "Sqrt("
             SQUARE -> "^2"
-            LOG -> "Log("
-            LN -> "Ln("
+            LOG -> "Log10("
+            LN -> "Log("
             else -> throw UnsupportedOperationException()
         }
     }

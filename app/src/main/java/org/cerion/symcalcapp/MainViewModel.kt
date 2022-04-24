@@ -1,11 +1,10 @@
 package org.cerion.symcalcapp
 
-import androidx.compose.runtime.produceState
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import org.cerion.symcalc.expression.ErrorExpr
 import org.cerion.symcalc.expression.Expr
-import org.cerion.symcalc.function.core.N
 import org.cerion.symcalc.number.Integer
 import org.cerion.symcalc.number.RealBigDec
 
@@ -29,8 +28,6 @@ class MainViewModel(initialDisplay: String = "") : ViewModel() {
     private val input: String
         get() {
             return display.value!!
-                .replace("Log(", "Log10(")
-                .replace("Ln(", "Log(")
         }
 
     // TODO auto closing bracket "(3+1 = 4"
@@ -66,26 +63,34 @@ class MainViewModel(initialDisplay: String = "") : ViewModel() {
         }
 
         if (key != Key.EVAL) {
-            val inputEval = Expr.parse(input).eval()
-            if (!inputEval.isError && inputEval.toString() != input)
-                _preview.value = inputEval.toString()
+            val inputEval = evalInput(input)
+            if (!inputEval.isError && inputEval.toString() != input) {
+                if (inputEval is RealBigDec)
+                    _preview.value = inputEval.toString().split("`")[0]
+                else
+                    _preview.value = inputEval.toString()
+            }
         }
     }
 
     // TODO make this match the eval for onKey
     fun directInput(input: String) {
-        val exactEval = Expr.parse(input).eval()
-
-        val inputEval = when(exactEval) {
-            is Integer -> exactEval
-            else -> Expr.parse(input).eval(12)
-        }
-
+        val inputEval = evalInput(input)
         if (!inputEval.isError && inputEval.toString() != input) {
             if (inputEval is RealBigDec)
                 _preview.value = inputEval.toString().split("`")[0]
             else
                 _preview.value = inputEval.toString()
+        }
+    }
+
+    private fun evalInput(input: String): Expr {
+        val exactEval = Expr.parse(input).eval()
+
+        return when(exactEval) {
+            is ErrorExpr -> exactEval
+            is Integer -> exactEval
+            else -> Expr.parse(input).eval(12)
         }
     }
 }

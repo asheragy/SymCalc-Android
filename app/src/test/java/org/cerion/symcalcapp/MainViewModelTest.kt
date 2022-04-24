@@ -113,12 +113,12 @@ internal class MainViewModelTest {
     @Test
     fun log() {
         onKeys(Key.LOG, Key.NUM_5, Key.DOT, Key.NUM_7, Key.BRACKET_RIGHT)
-        assertEquals("Log(5.7)", display)
+        assertEquals("Log10(5.7)", display)
         assertEquals("0.7558748556724915", preview)
 
         viewModel.clear()
         onKeys(Key.LN, Key.NUM_5, Key.DOT, Key.NUM_7, Key.BRACKET_RIGHT)
-        assertEquals("Ln(5.7)", display)
+        assertEquals("Log(5.7)", display)
         assertEquals("1.7404661748405046", preview)
     }
 
@@ -140,8 +140,8 @@ internal class MainViewModelTest {
         test("E", "2.71828182846")
         test("E + 1", "3.71828182846")
 
-        //test("Log(2)", "0.30...")
-        //test("Ln(2)", "0.69...")
+        test("Log10(2)", "0.301029995664")
+        test("Log(2)", "0.693147180560")
 
         test("Sin(2)", "0.909297426826")
         test("Cos(2)", "-0.416146836547")
