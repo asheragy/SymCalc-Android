@@ -34,8 +34,8 @@ enum class Key {
     FACTORIAL,
     BRACKET_LEFT,
     BRACKET_RIGHT,
-    DEBUG;
-
+    DEBUG,
+    NOOP;
 
     fun inputValue(): String {
         if (ordinal >= NUM_0.ordinal && ordinal <= NUM_9.ordinal)

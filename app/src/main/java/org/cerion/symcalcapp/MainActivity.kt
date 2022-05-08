@@ -25,11 +25,12 @@ import org.cerion.symcalcapp.ui.theme.SymCalcTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val vm = MainViewModel()
         setContent {
             SymCalcTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    Calculator()
+                    Calculator(vm)
                 }
             }
         }
@@ -39,7 +40,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Calculator(viewModel: MainViewModel = MainViewModel()) {
     val context = LocalContext.current
-    val display: String by viewModel.display.observeAsState(viewModel.display.value!!)
+    val display: String by viewModel.display.observeAsState("")
     val preview: String by viewModel.preview.observeAsState(viewModel.preview.value!!)
 
     Column(Modifier.background(Color.DarkGray, RectangleShape)) {
@@ -54,8 +55,10 @@ fun Calculator(viewModel: MainViewModel = MainViewModel()) {
         KeyPad {
             if (it == Key.DEBUG)
                 context.startActivity(Intent(context, DebugActivity::class.java))
-            else
+            else {
                 viewModel.onKey(it)
+                println(viewModel.display.value)
+            }
         }
     }
 

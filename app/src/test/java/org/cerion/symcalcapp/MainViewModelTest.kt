@@ -23,6 +23,7 @@ internal class MainViewModelTest {
     @org.junit.Before
     fun beforeEach() {
         viewModel = MainViewModel()
+        viewModel.display.observeForever {  }
     }
 
     private fun onKey(key: Key) {
@@ -150,14 +151,33 @@ internal class MainViewModelTest {
 
     @Test
     fun arbitraryPrecisionHeld() {
-        // TODO exact behavior is not quite like real calc
         onKeys(Key.NUM_1, Key.DIVIDE, Key.NUM_3, Key.PLUS, Key.NUM_1, Key.EVAL)
-        assertEquals("4/3", display)
+        assertEquals("1.33333333333", display)
+        assertEquals("", preview)
 
         onKeys(Key.TIMES, Key.NUM_3)
+        assertEquals("1.33333333333*3", display)
         assertEquals("4", preview)
         onKeys(Key.EVAL)
         assertEquals("4", display)
+        assertEquals("", preview)
+    }
+
+    @Test
+    fun incrementalEval() {
+        onKeys(Key.NUM_1, Key.DIVIDE, Key.NUM_3)
+        assertEquals("0.333333333333", preview)
+        onKey(Key.EVAL)
+        assertEquals("0.333333333333", display)
+        assertEquals("", preview)
+        onKey(Key.TIMES)
+        assertEquals("0.333333333333*", display)
+        assertEquals("", preview)
+        onKey(Key.NUM_3)
+        assertEquals("0.333333333333*3", display)
+        assertEquals("1", preview)
+        onKey(Key.EVAL)
+        assertEquals("1", display)
         assertEquals("", preview)
     }
 }
