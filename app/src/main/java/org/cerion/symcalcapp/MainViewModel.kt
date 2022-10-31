@@ -1,8 +1,9 @@
 package org.cerion.symcalcapp
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import org.cerion.symcalc.expression.ErrorExpr
 import org.cerion.symcalc.expression.Expr
@@ -12,30 +13,29 @@ import org.cerion.symcalc.number.RealBigDec
 private const val EXPR_PLACEHOLDER = "<EXPR>"
 
 class MainViewModel(initialDisplay: String = "") : ViewModel() {
-    private val _input = MutableLiveData(initialDisplay)
+    private var input by mutableStateOf(initialDisplay)
+    private var lastExpr: Expr? = null
 
-    val display = Transformations.map(_input) {
-        if (it.startsWith(EXPR_PLACEHOLDER)) {
-            val remaining = it.replace(EXPR_PLACEHOLDER, "")
+    val display by derivedStateOf {
+        if (input.startsWith(EXPR_PLACEHOLDER)) {
+            val remaining = input.replace(EXPR_PLACEHOLDER, "")
             exprToString(lastExpr!!) + remaining
         }
         else
-            it
+            input
     }
 
-    private val _preview = MutableLiveData("")
-    val preview: LiveData<String> = _preview
-
-    private var lastExpr: Expr? = null
+    var preview by mutableStateOf("")
+        private set
 
     init {
         if (initialDisplay.isNotEmpty())
-            _preview.value = Expr.parse(initialDisplay).eval().toString()
+            preview = Expr.parse(initialDisplay).eval().toString()
     }
 
     fun clear() {
-        _input.value = ""
-        _preview.value = ""
+        input = ""
+        preview = ""
     }
 
     // TODO auto closing bracket "(3+1 = 4"
@@ -44,33 +44,33 @@ class MainViewModel(initialDisplay: String = "") : ViewModel() {
 
         when(key) {
             Key.DEL -> {
-                if (preview.value!!.isEmpty())
-                    _input.value = ""
-                if (_input.value!!.isNotEmpty())
-                    _input.value = _input.value!!.substring(0, _input.value!!.length - 1)
+                if (preview.isEmpty())
+                    input = ""
+                if (input.isNotEmpty())
+                    input = input.substring(0, input.length - 1)
             }
             Key.CLEAR -> {
-                _input.value = ""
-                _preview.value = ""
+                input = ""
+                preview = ""
             }
             Key.EVAL -> {
                 // TODO fix precision 8.05 - 5
                 val result = eval()
 
                 if (result.isError)
-                    _preview.value = result.toString()
+                    preview = result.toString()
                 else {
                     lastExpr = result
-                    _input.value = EXPR_PLACEHOLDER
-                    _preview.value = ""
+                    input = EXPR_PLACEHOLDER
+                    preview = ""
                 }
             }
             Key.NOOP -> {
                 // Nothing
             }
             else -> {
-                _input.value = _input.value!! + key.inputValue()
-                println("updated = " + _input.value)
+                input = input + key.inputValue()
+                println("updated = " + input)
             }
         }
 
@@ -78,15 +78,15 @@ class MainViewModel(initialDisplay: String = "") : ViewModel() {
             val inputEval = eval()
             if (!inputEval.isError) {
                 val previewStr = exprToString(inputEval)
-                if (previewStr != _input.value)
-                    _preview.value = exprToString(inputEval)
+                if (previewStr != input)
+                    preview = exprToString(inputEval)
             }
         }
     }
 
     fun directInput(input: String) {
         onKey(Key.CLEAR)
-        _input.value = _input.value!! + input
+        this.input = this.input + input
         onKey(Key.NOOP)
     }
 
@@ -104,7 +104,7 @@ class MainViewModel(initialDisplay: String = "") : ViewModel() {
     }
 
     private fun eval(): Expr {
-        val input = _input.value!!
+        val input = input
 
         val inputExpr = if (input.startsWith(EXPR_PLACEHOLDER)) {
             val remaining = input.replace(EXPR_PLACEHOLDER, "")

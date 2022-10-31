@@ -1,30 +1,17 @@
 package org.cerion.symcalcapp
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import org.junit.Assert.assertEquals
 import org.junit.Test
-
-import org.junit.Assert.*
-import org.junit.Rule
 
 
 internal class MainViewModelTest {
-
-    private lateinit var viewModel: MainViewModel
-
-    @get:Rule
-    var instantExecutorRule = InstantTaskExecutorRule()
+    private val viewModel = MainViewModel()
 
     private val display
-        get() = viewModel.display.value
+        get() = viewModel.display
 
     private val preview
-        get() = viewModel.preview.value
-
-    @org.junit.Before
-    fun beforeEach() {
-        viewModel = MainViewModel()
-        viewModel.display.observeForever {  }
-    }
+        get() = viewModel.preview
 
     private fun onKey(key: Key) {
         viewModel.onKey(key)

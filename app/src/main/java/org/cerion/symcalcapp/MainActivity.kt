@@ -11,8 +11,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
@@ -40,15 +38,13 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Calculator(viewModel: MainViewModel = MainViewModel()) {
     val context = LocalContext.current
-    val display: String by viewModel.display.observeAsState("")
-    val preview: String by viewModel.preview.observeAsState(viewModel.preview.value!!)
 
     Column(Modifier.background(Color.DarkGray, RectangleShape)) {
-        Text(text = display,
+        Text(text = viewModel.display,
             Modifier.fillMaxWidth(),
             fontSize = 40.sp,
             textAlign = TextAlign.Right, color = Color.White)
-        Text(text = preview,
+        Text(text = viewModel.preview,
             Modifier.fillMaxWidth(),
             fontSize = 30.sp,
             textAlign = TextAlign.Right, color = Color.LightGray)
@@ -57,7 +53,7 @@ fun Calculator(viewModel: MainViewModel = MainViewModel()) {
                 context.startActivity(Intent(context, DebugActivity::class.java))
             else {
                 viewModel.onKey(it)
-                println(viewModel.display.value)
+                println(viewModel.display)
             }
         }
     }
